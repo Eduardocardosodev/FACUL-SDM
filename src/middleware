@@ -1,1 +1,22 @@
+import jwt from 'jsonwebtoken';
+import { Request, Response, NextFunction } from 'express';
+
+// Chave secreta para assinar os tokens
+const SECRET_KEY = 'your_secret_key';
+
+export function verifyToken(req: Request, res: Response, next: NextFunction): void {
+  const token = req.headers['authorization']; // Captura o token do cabeçalho
+
+  if (!token) {
+    res.status(401).json({ error: 'Token não fornecido' });
+    return;
+  }
+
+  try {
+    jwt.verify(token, SECRET_KEY); // Verifica a validade do token
+    next(); // Continua para o próximo middleware ou controlador
+  } catch (err) {
+    res.status(401).json({ error: 'Token inválido ou expirado' });
+  }
+}
 
